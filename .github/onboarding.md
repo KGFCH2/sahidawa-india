@@ -1,12 +1,12 @@
 ## 🎉 Welcome to SahiDawa! 🩺
 
-Hi @{author}, thank you for making your very first interaction with **SahiDawa — India's First Open-Source Citizen Medicine Verifier & Rural Health Bridge**! 🇮🇳
+Hi @{author}, thanks for making your very first interaction with **SahiDawa** 🇮🇳
 
-We are absolutely thrilled to have you here. To help you get started quickly and ensure a smooth contribution experience, please review this short onboarding guide:
+To get started smoothly:
 
 ---
 
-### 🛠️ 1. Local Development Setup
+### 🛠️ 1. Quick Setup
 
 SahiDawa is a monorepo built with Next.js, Express, and FastAPI.
 
@@ -18,9 +18,7 @@ For a full step-by-step installation guide, please read the [**README.md**](http
 
 ---
 
-### 🌿 2. Git Branch Naming Conventions
-
-To keep our repository organized, please create a new branch from `main` using these naming rules:
+### 🌿 2. Branch Naming
 
 - `feat/your-feature-name` ➔ For new features or updates
 - `fix/bug-description` ➔ For resolving issues or fixing bugs
@@ -29,14 +27,12 @@ To keep our repository organized, please create a new branch from `main` using t
 
 ---
 
-### 📋 3. Pull Request Checklist
+### 📋 3. Before Opening a PR
 
-Before you submit your Pull Request, ensure that:
-
-1. **Linked Issue:** You have linked an assigned issue in your PR description (e.g. `Closes #123`). _No blind PRs will be accepted!_
-2. **Local Verification:** You have run, built, and tested your changes locally.
-3. **No Redundant Files:** You haven't accidentally committed temporary files (`.env`, `node_modules`, local build folders).
-4. **Code Quality:** All lints and code format checks pass successfully.
+1. Open a PR with `Closes #123`.
+2. Test changes locally
+3. No Redundant Files: Don't commit temp files (`.env`, `node_modules`, build folders).
+4. Code Quality: Ensure all lints and code format checks pass successfully.
 
 ---
 
@@ -45,4 +41,4 @@ Before you submit your Pull Request, ensure that:
 - 📢 **Join our Discord:** [Click here to join SahiDawa Discord](https://discord.gg/dvbDuJVwNa) for instant maintainer support and live discussions.
 - 💬 **GitHub Discussions:** Head over to our [Discussions Tab](https://github.com/RatLoopz/sahidawa-india/discussions) to brainstorm new features or ask architecture questions.
 
-Thank you again for joining SahiDawa. Let's build healthcare technology that helps 1.4 billion Indians! ❤️🩺
+Thank you for joining SahiDawa ❤️🩺
