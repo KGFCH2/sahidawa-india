@@ -16,6 +16,7 @@ import { getConfidenceMeta, type ConfidenceMeta } from "./lib/confidence";
 import { detectEmergencyKeywords } from "./lib/emergency";
 import {
     getVoiceStepAnnouncement,
+    shouldHandleVoiceEscape,
     shouldAutoFocusVoicePanel,
     VOICE_FOCUS_RING_CLASS,
 } from "./lib/accessibility";
@@ -129,6 +130,7 @@ export default function VoiceTriagePage() {
     const manualStopRef = useRef(false);
     const startSessionIdRef = useRef(0);
     const autoSpokenKeyRef = useRef("");
+    const mainRef = useRef<HTMLElement | null>(null);
     const panelRef = useRef<HTMLDivElement | null>(null);
 
     const selectedLanguageOption = getVoiceLanguageOption(selectedLanguage);
@@ -282,6 +284,23 @@ export default function VoiceTriagePage() {
 
     const handleEscapeShortcut = useEffectEvent((event: KeyboardEvent) => {
         if (event.key !== "Escape") {
+            return;
+        }
+
+        const activeElement =
+            typeof document !== "undefined" ? (document.activeElement as HTMLElement | null) : null;
+        const activeWithinVoiceRegion = Boolean(
+            activeElement && mainRef.current?.contains(activeElement)
+        );
+
+        if (
+            !shouldHandleVoiceEscape({
+                activeElementTagName: activeElement?.tagName,
+                activeWithinVoiceRegion,
+                isSpeaking,
+                step,
+            })
+        ) {
             return;
         }
 
@@ -885,12 +904,6 @@ export default function VoiceTriagePage() {
 
     return (
         <div className="relative flex min-h-screen flex-col overflow-hidden bg-slate-50 font-sans">
-            <a
-                href="#main-content"
-                className="sr-only absolute top-4 left-4 z-[60] rounded-full bg-emerald-600 px-4 py-2 text-sm font-bold text-white shadow-lg focus:not-sr-only focus-visible:ring-[3px] focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-600 focus-visible:outline-none"
-            >
-                {t("skip_to_main_content")}
-            </a>
             <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
                 {srAnnouncement}
             </div>
@@ -919,6 +932,7 @@ export default function VoiceTriagePage() {
 
             <main
                 id="main-content"
+                ref={mainRef}
                 tabIndex={-1}
                 className="relative z-10 flex flex-1 flex-col items-center justify-center gap-6 px-6 py-8"
             >
@@ -966,7 +980,7 @@ export default function VoiceTriagePage() {
                 <div
                     ref={panelRef}
                     tabIndex={-1}
-                    className="w-full max-w-md rounded-[2.5rem] focus-visible:ring-[3px] focus-visible:ring-emerald-600 focus-visible:ring-offset-2 focus-visible:outline-none"
+                    className="w-full max-w-md rounded-[2.5rem] focus-visible:ring-[3px] focus-visible:ring-emerald-600 focus-visible:ring-offset-2 focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
                 >
                     {step === "initial" && (
                         <VoiceIntroPanel
@@ -1066,7 +1080,7 @@ export default function VoiceTriagePage() {
                                 ? t("stop_listening_aria")
                                 : t("start_listening_aria")
                         }
-                        className={`relative flex h-24 w-24 items-center justify-center rounded-full transition-all duration-500 focus-visible:ring-[3px] focus-visible:ring-emerald-600 focus-visible:ring-offset-4 focus-visible:outline-none ${
+                        className={`relative flex h-24 w-24 items-center justify-center rounded-full transition-all duration-500 focus-visible:ring-[3px] focus-visible:ring-emerald-600 focus-visible:ring-offset-4 focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-emerald-600 ${
                             step === "listening"
                                 ? "scale-125 bg-red-500"
                                 : "bg-emerald-500 shadow-xl shadow-emerald-500/30 hover:scale-110"

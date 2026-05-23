@@ -43,6 +43,29 @@ function startDevServer() {
     return server;
 }
 
+function getTabbableElements(document) {
+    const tabbableSelector = [
+        "a[href]",
+        "button:not([disabled])",
+        "input:not([disabled])",
+        "select:not([disabled])",
+        "textarea:not([disabled])",
+        "[tabindex]:not([tabindex='-1'])",
+    ].join(",");
+
+    return Array.from(document.querySelectorAll(tabbableSelector)).filter((element) => {
+        if (!(element instanceof document.defaultView.HTMLElement)) {
+            return false;
+        }
+
+        if (element.closest("[aria-hidden='true']")) {
+            return false;
+        }
+
+        return true;
+    });
+}
+
 async function runAxeAudit(url) {
     const response = await fetch(url, { redirect: "follow" });
 
@@ -67,6 +90,16 @@ async function runAxeAudit(url) {
 
     if (!mainTarget) {
         throw new Error("Missing main#main-content landmark target");
+    }
+
+    const tabbableElements = getTabbableElements(dom.window.document);
+
+    if (tabbableElements[0] !== skipLink) {
+        const firstTabbableDescription = tabbableElements[0]?.outerHTML ?? "none";
+
+        throw new Error(
+            `Skip link is not the first tabbable element in the page shell. First tabbable: ${firstTabbableDescription}`
+        );
     }
 
     const auditRoot = dom.window.document.createElement("div");

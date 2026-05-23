@@ -4,7 +4,7 @@ import { ArrowLeft, Globe, Zap } from "lucide-react";
 import { Link } from "@/i18n/routing";
 
 const pageHeaderFocusRingClass =
-    "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-emerald-600 focus-visible:ring-offset-2";
+    "focus-visible:outline-[3px] focus-visible:outline-emerald-600 focus-visible:outline-offset-2 focus-visible:ring-[3px] focus-visible:ring-emerald-600 focus-visible:ring-offset-2";
 
 interface PageHeaderProps {
     title?: string;

@@ -1,9 +1,14 @@
 import { renderToStaticMarkup } from "react-dom/server";
 
+import VoiceLayout from "../app/[locale]/voice/layout";
 import VoiceTriagePage from "../app/[locale]/voice/page";
 
 jest.mock("next-intl", () => ({
     useTranslations: () => (key: string) => key,
+}));
+
+jest.mock("next-intl/server", () => ({
+    getTranslations: async () => (key: string) => key,
 }));
 
 jest.mock("sonner", () => ({
@@ -24,15 +29,19 @@ jest.mock("../app/[locale]/components/PageHeader", () => ({
 }));
 
 describe("VoiceTriagePage accessibility shell", () => {
-    it("renders a skip link before a focusable main landmark target", () => {
-        const markup = renderToStaticMarkup(<VoiceTriagePage />);
-        const skipLinkIndex = markup.indexOf('href="#main-content"');
-        const mainIndex = markup.indexOf("<main");
+    it("renders a skip link before a focusable main landmark target", async () => {
+        const layoutMarkup = renderToStaticMarkup(
+            await VoiceLayout({
+                children: <VoiceTriagePage />,
+            })
+        );
+        const skipLinkIndex = layoutMarkup.indexOf('href="#main-content"');
+        const mainIndex = layoutMarkup.indexOf("<main");
 
         expect(skipLinkIndex).toBeGreaterThan(-1);
         expect(mainIndex).toBeGreaterThan(-1);
         expect(skipLinkIndex).toBeLessThan(mainIndex);
-        expect(markup).toContain('id="main-content"');
-        expect(markup).toContain('tabindex="-1"');
+        expect(layoutMarkup).toContain('id="main-content"');
+        expect(layoutMarkup).toContain('tabindex="-1"');
     });
 });

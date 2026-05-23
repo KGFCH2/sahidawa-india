@@ -49,6 +49,9 @@ describe("Voice Triage accessibility semantics", () => {
         );
 
         expect(markup).toContain("motion-reduce:animate-none");
+        expect(markup).toContain("focus-visible:outline-[3px]");
+        expect(markup).toContain("focus-visible:outline-emerald-600");
+        expect(markup).toContain("focus-visible:outline-offset-2");
         expect(markup).toContain("focus-visible:ring-[3px]");
         expect(markup).toContain("focus-visible:ring-emerald-600");
         expect(markup).toContain("focus-visible:ring-offset-2");
@@ -67,6 +70,8 @@ describe("Voice Triage accessibility semantics", () => {
         );
 
         expect(markup).toContain("motion-reduce:animate-none");
+        expect(markup).toContain("focus-visible:outline-[3px]");
+        expect(markup).toContain("focus-visible:outline-emerald-600");
         expect(markup).toContain("focus-visible:ring-[3px]");
         expect(markup).toContain("focus-visible:ring-emerald-600");
     });
@@ -111,6 +116,9 @@ describe("Voice Triage accessibility semantics", () => {
 
         expect(markup).toContain('role="region"');
         expect(markup).toContain('aria-labelledby="voice-ai-analysis-heading"');
+        expect(markup).toContain("focus-visible:outline-[3px]");
+        expect(markup).toContain("focus-visible:outline-emerald-600");
+        expect(markup).toContain("focus-visible:outline-offset-2");
         expect(markup).toContain("focus-visible:ring-[3px]");
         expect(markup).toContain("focus-visible:ring-emerald-600");
         expect(markup).toContain("focus-visible:ring-offset-2");

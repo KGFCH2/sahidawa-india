@@ -1,7 +1,7 @@
 import type { VoiceErrorState, VoiceStep } from "../types";
 
 export const VOICE_FOCUS_RING_CLASS =
-    "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-emerald-600 focus-visible:ring-offset-2";
+    "focus-visible:outline-[3px] focus-visible:outline-emerald-600 focus-visible:outline-offset-2 focus-visible:ring-[3px] focus-visible:ring-emerald-600 focus-visible:ring-offset-2";
 
 type VoiceAnnouncementCopy = {
     emergencyTitle: string;
@@ -19,6 +19,39 @@ type VoiceAnnouncementCopy = {
 
 export function shouldAutoFocusVoicePanel(step: VoiceStep) {
     return step !== "initial" && step !== "listening";
+}
+
+export function shouldHandleVoiceEscape({
+    activeElementTagName,
+    activeWithinVoiceRegion,
+    isSpeaking,
+    step,
+}: {
+    activeElementTagName?: string;
+    activeWithinVoiceRegion: boolean;
+    isSpeaking: boolean;
+    step: VoiceStep;
+}) {
+    if (!activeWithinVoiceRegion) {
+        return false;
+    }
+
+    const normalizedTagName = activeElementTagName?.toUpperCase();
+    const isNativeInteractiveControl =
+        normalizedTagName === "INPUT" ||
+        normalizedTagName === "SELECT" ||
+        normalizedTagName === "OPTION" ||
+        normalizedTagName === "TEXTAREA";
+
+    if (isNativeInteractiveControl) {
+        return false;
+    }
+
+    if (isSpeaking) {
+        return true;
+    }
+
+    return step === "listening" || step === "review" || step === "error" || step === "result";
 }
 
 export function getVoiceStepAnnouncement({

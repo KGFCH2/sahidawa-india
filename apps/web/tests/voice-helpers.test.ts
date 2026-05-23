@@ -2,6 +2,7 @@ import { getConfidenceMeta } from "../app/[locale]/voice/lib/confidence";
 import { detectEmergencyKeywords } from "../app/[locale]/voice/lib/emergency";
 import {
     getVoiceStepAnnouncement,
+    shouldHandleVoiceEscape,
     shouldAutoFocusVoicePanel,
 } from "../app/[locale]/voice/lib/accessibility";
 import {
@@ -276,5 +277,49 @@ describe("getVoiceStepAnnouncement", () => {
         ).toBe(
             "Something went wrong - Microphone blocked. Please allow microphone access and try again."
         );
+    });
+});
+
+describe("shouldHandleVoiceEscape", () => {
+    it("only handles escape inside the voice region for supported voice states", () => {
+        expect(
+            shouldHandleVoiceEscape({
+                activeElementTagName: "BUTTON",
+                activeWithinVoiceRegion: true,
+                isSpeaking: false,
+                step: "review",
+            })
+        ).toBe(true);
+
+        expect(
+            shouldHandleVoiceEscape({
+                activeElementTagName: "BUTTON",
+                activeWithinVoiceRegion: false,
+                isSpeaking: false,
+                step: "review",
+            })
+        ).toBe(false);
+    });
+
+    it("does not hijack escape for native form controls inside the voice region", () => {
+        expect(
+            shouldHandleVoiceEscape({
+                activeElementTagName: "SELECT",
+                activeWithinVoiceRegion: true,
+                isSpeaking: false,
+                step: "review",
+            })
+        ).toBe(false);
+    });
+
+    it("allows escape to stop speaking when focus is still inside the voice region", () => {
+        expect(
+            shouldHandleVoiceEscape({
+                activeElementTagName: "BUTTON",
+                activeWithinVoiceRegion: true,
+                isSpeaking: true,
+                step: "result",
+            })
+        ).toBe(true);
     });
 });
