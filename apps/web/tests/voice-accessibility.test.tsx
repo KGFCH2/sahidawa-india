@@ -65,13 +65,19 @@ describe("Voice Triage accessibility semantics", () => {
                     message: "Microphone blocked",
                 }}
                 retryLabel="Try Again"
+                switchToTextLabel="Type Instead"
                 onRetry={() => undefined}
+                onSwitchToText={() => undefined}
             />
         );
 
         expect(markup).toContain("motion-reduce:animate-none");
-        expect(markup).toContain('aria-describedby="voice-error-message"');
-        expect(markup).toContain('id="voice-error-message"');
+
+        const match = markup.match(/aria-describedby="([^"]+)"/);
+        expect(match).not.toBeNull();
+        const id = match![1];
+        expect(markup).toContain(`id="${id}"`);
+
         expect(markup).toContain("focus-visible:outline-[3px]");
         expect(markup).toContain("focus-visible:outline-emerald-600");
         expect(markup).toContain("focus-visible:ring-[3px]");
