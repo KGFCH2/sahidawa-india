@@ -10,6 +10,7 @@ interface OfflineErrorBoundaryProps {
 interface OfflineErrorBoundaryState {
   hasError: boolean;
   isOfflineError: boolean;
+  isChecking: boolean;
 }
 
 /**
@@ -25,6 +26,7 @@ export class OfflineErrorBoundary extends React.Component<
     this.state = {
       hasError: false,
       isOfflineError: false,
+      isChecking: false,
     };
   }
 
@@ -46,16 +48,29 @@ export class OfflineErrorBoundary extends React.Component<
   }
 
   handleRetry = () => {
+    if (typeof window !== 'undefined' && !window.navigator.onLine) {
+      this.setState({ isChecking: true });
+      setTimeout(() => {
+        this.setState({ isChecking: false });
+      }, 1000);
+      return;
+    }
+
     this.setState({
       hasError: false,
       isOfflineError: false,
+      isChecking: false,
     });
   };
 
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-[400px] flex items-center justify-center p-4">
+        <div 
+          className="min-h-[400px] flex items-center justify-center p-4"
+          role="alert"
+          aria-live="assertive"
+        >
           <div className="text-center max-w-md">
             <div className="w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/20 flex items-center justify-center mx-auto mb-4">
               {this.state.isOfflineError ? (
@@ -80,9 +95,17 @@ export class OfflineErrorBoundary extends React.Component<
             <div className="flex gap-3 flex-col sm:flex-row">
               <button
                 onClick={this.handleRetry}
-                className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                disabled={this.state.isChecking}
+                className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                Try Again
+                {this.state.isChecking ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Checking...
+                  </>
+                ) : (
+                  'Try Again'
+                )}
               </button>
               <a
                 href="/"
